@@ -29,6 +29,7 @@ func (h *Handler) handleLogin(w http.ResponseWriter, r *http.Request) {
 
 func (h *Handler) handleRegister(w http.ResponseWriter, r *http.Request) {
 
+	println("Register reached")
 	var registerUserPayload types.RegisterUserPayload
 	err := utils.ParseJSON(r, registerUserPayload)
 
