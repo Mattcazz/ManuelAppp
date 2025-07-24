@@ -21,7 +21,7 @@ type User struct {
 	Email    string `json:"email"`
 	Password string `json:"-"`
 
-	CreatedAt string `json:"created_at"`
+	CreatedAt time.Time `json:"created_at"`
 }
 
 type Event struct {
@@ -31,20 +31,20 @@ type Event struct {
 	StartTime time.Time `json:"start_time"`
 	EndTime   time.Time `json:"end_time"`
 
-	CreatedAt  string `json:"created_at"`
-	UpadatedAt string `json:"updated_at"`
+	CreatedAt  time.Time `json:"created_at"`
+	UpadatedAt time.Time `json:"updated_at"`
 }
 
 type Bet struct {
 	ID        int         `json:"id"`
 	UserId    int         `json:"user_id"`
-	EventId   int         `json:"event_id`
+	EventId   int         `json:"event_id"`
 	Status    EventStatus `json:"status"`
 	Selection string      `json:"selection"`
 	Result    string      `json:"result"`
 
-	CreatedAt  string `json:"created_at"`
-	UpadatedAt string `json:"updated_at"`
+	CreatedAt  time.Time `json:"created_at"`
+	UpadatedAt time.Time `json:"updated_at"`
 }
 
 type EventStatus string

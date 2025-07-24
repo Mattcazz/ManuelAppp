@@ -16,7 +16,8 @@ func NewStore(db *sql.DB) *Store {
 }
 
 func (s *Store) GetUserByEmail(email string) (*types.User, error) {
-	query := `SELECT * FROM USER WHERE email = $1`
+
+	query := `SELECT * FROM users WHERE "email" = $1`
 
 	row, err := s.db.Query(query, email)
 
@@ -34,7 +35,7 @@ func (s *Store) GetUserByEmail(email string) (*types.User, error) {
 func (s *Store) CreateUser(user types.User) error {
 
 	query := `INSERT INTO users 
-			(user_name, email, passwordhash, created_at)
+			(user_name, email, password, created_at)
 			VALUES ($1, $2, $3, $4)`
 
 	_, err := s.db.Query(query,
@@ -51,6 +52,7 @@ func scanUserRow(row *sql.Rows) (*types.User, error) {
 	user := new(types.User)
 
 	err := row.Scan(
+		&user.ID,
 		&user.UserName,
 		&user.Email,
 		&user.Password,

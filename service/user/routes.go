@@ -3,6 +3,7 @@ package user
 import (
 	"fmt"
 	"net/http"
+	"time"
 
 	"github.com/Mattcazz/ManuelAppp.git/service/auth"
 	"github.com/Mattcazz/ManuelAppp.git/types"
@@ -29,9 +30,8 @@ func (h *Handler) handleLogin(w http.ResponseWriter, r *http.Request) {
 
 func (h *Handler) handleRegister(w http.ResponseWriter, r *http.Request) {
 
-	println("Register reached")
 	var registerUserPayload types.RegisterUserPayload
-	err := utils.ParseJSON(r, registerUserPayload)
+	err := utils.ParseJSON(r, &registerUserPayload)
 
 	if err != nil {
 		utils.WriteError(w, http.StatusBadRequest, err)
@@ -39,7 +39,7 @@ func (h *Handler) handleRegister(w http.ResponseWriter, r *http.Request) {
 
 	_, err = h.store.GetUserByEmail(registerUserPayload.Email)
 
-	if err != nil {
+	if err == nil { // err == nil that means that it found a user with the given email
 		utils.WriteError(w, http.StatusBadRequest, fmt.Errorf("user with email %s already exists", registerUserPayload.Email))
 		return
 	}
@@ -48,15 +48,17 @@ func (h *Handler) handleRegister(w http.ResponseWriter, r *http.Request) {
 
 	if err != nil {
 		utils.WriteError(w, http.StatusInternalServerError, err)
+		return
 	}
 
 	err = h.store.CreateUser(types.User{
-		UserName: registerUserPayload.UserName,
-		Email:    registerUserPayload.Email,
-		Password: hashedPassword,
+		UserName:  registerUserPayload.UserName,
+		Email:     registerUserPayload.Email,
+		Password:  hashedPassword,
+		CreatedAt: time.Now(),
 	})
 
-	if err == nil {
+	if err != nil {
 		utils.WriteError(w, http.StatusInternalServerError, err)
 		return
 	}
