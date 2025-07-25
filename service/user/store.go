@@ -47,6 +47,24 @@ func (s *Store) CreateUser(user types.User) error {
 	return err
 }
 
+func (s *Store) GetUserById(id int) (*types.User, error) {
+
+	query := `SELECT * FROM users WHERE id = $1`
+
+	row, err := s.db.Query(query, id)
+
+	if err != nil {
+		return nil, err
+	}
+
+	for row.Next() {
+		return scanUserRow(row)
+	}
+
+	return nil, fmt.Errorf("the search came up with no results")
+
+}
+
 // Private function that returns a user given a row to scan
 func scanUserRow(row *sql.Rows) (*types.User, error) {
 	user := new(types.User)
